@@ -107,6 +107,7 @@ import net.runelite.http.api.item.ItemStats;
 import net.runelite.http.api.osbuddy.OSBGrandExchangeClient;
 import net.runelite.http.api.osbuddy.OSBGrandExchangeResult;
 import net.runelite.http.api.worlds.WorldType;
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.commons.text.similarity.FuzzyScore;
@@ -396,6 +397,7 @@ public class GrandExchangePlugin extends Plugin
 	void submitTrade(int slot, GrandExchangeOffer offer)
 	{
 		GrandExchangeOfferState state = offer.getState();
+		final HttpUrl customURL = config.customURL() == null ? null : HttpUrl.parse(config.customURL());
 
 		if (state != GrandExchangeOfferState.CANCELLED_BUY && state != GrandExchangeOfferState.CANCELLED_SELL && state != GrandExchangeOfferState.BUYING && state != GrandExchangeOfferState.SELLING)
 		{
@@ -416,7 +418,7 @@ public class GrandExchangePlugin extends Plugin
 			grandExchangeTrade.setLogin(loginBurstGeUpdates);
 
 			log.debug("Submitting new trade: {}", grandExchangeTrade);
-			grandExchangeClient.submit(grandExchangeTrade);
+			grandExchangeClient.submit(grandExchangeTrade, customURL, client);
 			return;
 		}
 
@@ -447,7 +449,7 @@ public class GrandExchangePlugin extends Plugin
 			grandExchangeTrade.setLogin(loginBurstGeUpdates);
 
 			log.debug("Submitting cancelled: {}", grandExchangeTrade);
-			grandExchangeClient.submit(grandExchangeTrade);
+			grandExchangeClient.submit(grandExchangeTrade, customURL, client);
 			return;
 		}
 
@@ -472,7 +474,7 @@ public class GrandExchangePlugin extends Plugin
 		grandExchangeTrade.setLogin(loginBurstGeUpdates);
 
 		log.debug("Submitting trade: {}", grandExchangeTrade);
-		grandExchangeClient.submit(grandExchangeTrade);
+		grandExchangeClient.submit(grandExchangeTrade, customURL, client);
 	}
 
 	private WorldType getGeWorldType()

@@ -34,6 +34,17 @@ public interface GrandExchangeConfig extends Config
 	String CONFIG_GROUP = "grandexchange";
 
 	@ConfigItem(
+			position = 0,
+			keyName = "customURL",
+			name = "Custom URL",
+			description = "Custom URL to send stats"
+	)
+	default String customURL()
+	{
+		return "";
+	}
+
+	@ConfigItem(
 		position = 1,
 		keyName = "quickLookup",
 		name = "Hotkey lookup (Alt + Left click)",

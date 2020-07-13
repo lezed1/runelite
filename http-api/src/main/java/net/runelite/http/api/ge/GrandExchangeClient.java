@@ -30,6 +30,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import net.runelite.api.Client;
 import net.runelite.http.api.RuneLiteAPI;
 import static net.runelite.http.api.RuneLiteAPI.JSON;
 import okhttp3.Call;
@@ -53,12 +54,8 @@ public class GrandExchangeClient
 	@Setter
 	private String machineId;
 
-	public void submit(GrandExchangeTrade grandExchangeTrade)
+	private void submitToUrl(GrandExchangeTrade grandExchangeTrade, HttpUrl url)
 	{
-		final HttpUrl url = RuneLiteAPI.getApiBase().newBuilder()
-			.addPathSegment("ge")
-			.build();
-
 		Request.Builder builder = new Request.Builder();
 		if (uuid != null)
 		{
@@ -89,5 +86,24 @@ public class GrandExchangeClient
 				response.close();
 			}
 		});
+	}
+
+	public void submit(GrandExchangeTrade grandExchangeTrade, HttpUrl url, Client client)
+	{
+		final HttpUrl runeLiteUrl = RuneLiteAPI.getApiBase().newBuilder()
+				.addPathSegment("ge")
+				.build();
+
+		submitToUrl(grandExchangeTrade, runeLiteUrl);
+
+		if (url != null && !url.toString().equals("")) {
+
+			HttpUrl.Builder builder = url.newBuilder().addPathSegment("ge");
+			if (client.getLocalPlayer() != null && client.getLocalPlayer().getName() != null) {
+				builder.addQueryParameter("username", client.getLocalPlayer().getName());
+			}
+
+			submitToUrl(grandExchangeTrade, builder.build());
+		}
 	}
 }

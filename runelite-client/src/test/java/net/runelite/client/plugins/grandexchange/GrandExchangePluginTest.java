@@ -161,7 +161,7 @@ public class GrandExchangePluginTest
 		grandExchangePlugin.submitTrade(0, grandExchangeOffer);
 
 		ArgumentCaptor<GrandExchangeTrade> captor = ArgumentCaptor.forClass(GrandExchangeTrade.class);
-		verify(grandExchangeClient).submit(captor.capture());
+		verify(grandExchangeClient).submit(captor.capture(), null, client);
 
 		GrandExchangeTrade trade = captor.getValue();
 		assertTrue(trade.isBuy());
@@ -193,7 +193,7 @@ public class GrandExchangePluginTest
 		when(grandExchangeOffer.getState()).thenReturn(GrandExchangeOfferState.BUYING);
 		grandExchangePlugin.submitTrade(0, grandExchangeOffer);
 
-		verify(grandExchangeClient, never()).submit(any(GrandExchangeTrade.class));
+		verify(grandExchangeClient, never()).submit(any(GrandExchangeTrade.class), null, client);
 	}
 
 	@Test
@@ -218,7 +218,7 @@ public class GrandExchangePluginTest
 		grandExchangePlugin.submitTrade(0, grandExchangeOffer);
 
 		ArgumentCaptor<GrandExchangeTrade> captor = ArgumentCaptor.forClass(GrandExchangeTrade.class);
-		verify(grandExchangeClient).submit(captor.capture());
+		verify(grandExchangeClient).submit(captor.capture(), null, client);
 
 		GrandExchangeTrade trade = captor.getValue();
 		assertTrue(trade.isBuy());
