@@ -26,6 +26,7 @@ package net.runelite.http.api.ge;
 
 import com.google.gson.Gson;
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -88,17 +89,15 @@ public class GrandExchangeClient
 		});
 	}
 
-	public void submit(GrandExchangeTrade grandExchangeTrade, HttpUrl url, Client client)
-	{
+	public void submit(GrandExchangeTrade grandExchangeTrade, List<HttpUrl> extraURLs, Client client) {
 		final HttpUrl runeLiteUrl = RuneLiteAPI.getApiBase().newBuilder()
 				.addPathSegment("ge")
 				.build();
 
 		submitToUrl(grandExchangeTrade, runeLiteUrl);
 
-		if (url != null && !url.toString().equals("")) {
-
-			HttpUrl.Builder builder = url.newBuilder().addPathSegment("ge");
+		for (HttpUrl extraURL : extraURLs) {
+			HttpUrl.Builder builder = extraURL.newBuilder().addPathSegment("ge");
 			if (client.getLocalPlayer() != null && client.getLocalPlayer().getName() != null) {
 				builder.addQueryParameter("username", client.getLocalPlayer().getName());
 			}

@@ -41,13 +41,7 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.EnumSet;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
@@ -397,7 +391,16 @@ public class GrandExchangePlugin extends Plugin
 	void submitTrade(int slot, GrandExchangeOffer offer)
 	{
 		GrandExchangeOfferState state = offer.getState();
-		final HttpUrl customURL = config.customURL() == null ? null : HttpUrl.parse(config.customURL());
+		List<HttpUrl> customURLs = new LinkedList<>();
+
+		if (config.customURLs() != null) {
+			for (String customURL : config.customURLs().split("\n")) {
+				customURL = customURL.trim();
+				if (!customURL.isEmpty()) {
+					customURLs.add(HttpUrl.parse(customURL));
+				}
+			}
+		}
 
 		if (state != GrandExchangeOfferState.CANCELLED_BUY && state != GrandExchangeOfferState.CANCELLED_SELL && state != GrandExchangeOfferState.BUYING && state != GrandExchangeOfferState.SELLING)
 		{
@@ -418,7 +421,7 @@ public class GrandExchangePlugin extends Plugin
 			grandExchangeTrade.setLogin(loginBurstGeUpdates);
 
 			log.debug("Submitting new trade: {}", grandExchangeTrade);
-			grandExchangeClient.submit(grandExchangeTrade, customURL, client);
+			grandExchangeClient.submit(grandExchangeTrade, customURLs, client);
 			return;
 		}
 
@@ -449,7 +452,7 @@ public class GrandExchangePlugin extends Plugin
 			grandExchangeTrade.setLogin(loginBurstGeUpdates);
 
 			log.debug("Submitting cancelled: {}", grandExchangeTrade);
-			grandExchangeClient.submit(grandExchangeTrade, customURL, client);
+			grandExchangeClient.submit(grandExchangeTrade, customURLs, client);
 			return;
 		}
 
@@ -474,7 +477,7 @@ public class GrandExchangePlugin extends Plugin
 		grandExchangeTrade.setLogin(loginBurstGeUpdates);
 
 		log.debug("Submitting trade: {}", grandExchangeTrade);
-		grandExchangeClient.submit(grandExchangeTrade, customURL, client);
+		grandExchangeClient.submit(grandExchangeTrade, customURLs, client);
 	}
 
 	private WorldType getGeWorldType()

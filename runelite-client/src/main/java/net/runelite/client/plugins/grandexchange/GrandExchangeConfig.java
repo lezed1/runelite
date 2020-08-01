@@ -36,10 +36,10 @@ public interface GrandExchangeConfig extends Config
 	@ConfigItem(
 			position = 0,
 			keyName = "customURL",
-			name = "Custom URL",
-			description = "Custom URL to send stats"
+			name = "Custom URLs",
+			description = "Custom URLs to send stats, one per line"
 	)
-	default String customURL()
+	default String customURLs()
 	{
 		return "";
 	}

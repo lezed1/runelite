@@ -29,6 +29,7 @@ import com.google.inject.testing.fieldbinder.Bind;
 import com.google.inject.testing.fieldbinder.BoundFieldModule;
 import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 import javax.inject.Inject;
@@ -57,9 +58,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import org.mockito.Mock;
+
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -161,7 +162,7 @@ public class GrandExchangePluginTest
 		grandExchangePlugin.submitTrade(0, grandExchangeOffer);
 
 		ArgumentCaptor<GrandExchangeTrade> captor = ArgumentCaptor.forClass(GrandExchangeTrade.class);
-		verify(grandExchangeClient).submit(captor.capture(), null, client);
+		verify(grandExchangeClient).submit(captor.capture(), anyList(), client);
 
 		GrandExchangeTrade trade = captor.getValue();
 		assertTrue(trade.isBuy());
@@ -193,7 +194,7 @@ public class GrandExchangePluginTest
 		when(grandExchangeOffer.getState()).thenReturn(GrandExchangeOfferState.BUYING);
 		grandExchangePlugin.submitTrade(0, grandExchangeOffer);
 
-		verify(grandExchangeClient, never()).submit(any(GrandExchangeTrade.class), null, client);
+		verify(grandExchangeClient, never()).submit(any(GrandExchangeTrade.class), anyList(), client);
 	}
 
 	@Test
@@ -218,7 +219,7 @@ public class GrandExchangePluginTest
 		grandExchangePlugin.submitTrade(0, grandExchangeOffer);
 
 		ArgumentCaptor<GrandExchangeTrade> captor = ArgumentCaptor.forClass(GrandExchangeTrade.class);
-		verify(grandExchangeClient).submit(captor.capture(), null, client);
+		verify(grandExchangeClient).submit(captor.capture(), anyList(), client);
 
 		GrandExchangeTrade trade = captor.getValue();
 		assertTrue(trade.isBuy());
